@@ -1,5 +1,4 @@
 import time
-import os
 
 import openai
 from openai import OpenAI
@@ -8,7 +7,7 @@ client = OpenAI(
     base_url="https://api.chatanywhere.tech"
 )
 
-# import transformers
+import transformers
 import json
 import requests
 
@@ -47,10 +46,6 @@ def get_llm_result(args, messages, vllm_bags):
             messages=messages,
             max_tokens=args.max_tokens,
             temperature=args.temperature,
-            # top_p=1,
-            # frequency_penalty=0,
-            # presence_penalty=0,
-            # stop='问题: '
         )
         print("answers:"+outputs.choices[0].message.content)
 
@@ -82,7 +77,6 @@ def get_llm_result(args, messages, vllm_bags):
         return outputs["response"][0]["outputs"][0]["text"]
 
 
-    # 处理访问频率过高的情况
     def get_res(messages):
         if "gomall" in args.model_type:
             res = get_res_from_gomall(messages)
