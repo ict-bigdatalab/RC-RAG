@@ -208,7 +208,7 @@ def deal_prediction_with_evidence(pred):
     if has_answer(["no specific", "unconfirmed", "uncertain", "unavailable", "sorry", "not have access", "no information", 
                    "not provide", "no clear", "not mentioned", "not mention", "no mention", "no answer", "N/A", "unclear", 
                    "not clear", "unknown", "partially correct", "partially incorrect", "not correct", 
-                   "cannot determine", "cannot answer", "not incorrect", "incomplete"], pred): # 放弃回答
+                   "cannot determine", "cannot answer", "not incorrect", "incomplete"], pred):
         reject = True
     else:
         reject = False
@@ -234,11 +234,11 @@ def extract_ans_evi(text):
 
     evi = re.sub(evi_pattern, "", text) if evi_pattern is not None else text
 
-    if ans and 'Passage-' in ans:
-        pattern = re.compile(r'Passage-(.)')
-        temp = re.sub(pattern, '', ans).strip()
-        # if len(temp)<3:
-        #     ans = get_answer_from_text(evi)
+    # if ans and 'Passage-' in ans:
+    #     pattern = re.compile(r'Passage-(.)')
+    #     temp = re.sub(pattern, '', ans).strip()
+    #     if len(temp)<3:
+    #         ans = get_answer_from_text(evi)
 
     evi = get_evidence_from_text(evi)
 
@@ -391,9 +391,6 @@ def deal_fusion_probability(text):
         else:
             confidence = 0.0
     return confidence
-
-
-
 
 
 def match(res, text1_prediction, text2_reference, prompt_type):
