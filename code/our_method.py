@@ -11,7 +11,6 @@ def annotation(res, sample):
 
 def decision(res, prompt_type):
 
-    # 增加拒绝的判断
     if res[prompt_type]['answer'] and res['rag']['answer']: 
         answer_matching = match(res, res[prompt_type]['answer'], [res['rag']['answer']], prompt_type)
 
