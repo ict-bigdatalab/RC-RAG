@@ -8,7 +8,7 @@ from utils import (load_source, save_result,
 from our_method import annotation, decision, count_fold
 import copy
 
-# from vllm import LLM, SamplingParams
+from vllm import LLM, SamplingParams
 
 ra_dict = {
     'sparse': 'sparse_ctxs',
@@ -29,7 +29,6 @@ def get_args():
 
     # parser.add_argument("--data_name", type=str, help="The name of the dataset.", required=True)
     # parser.add_argument('--model_type', type=str, choices=['chatgpt', 'vllm_mistral', 'gomall_mistral', 'gomall_llama3'], required=True)
-    # parser.add_argument("--prompt_trick", type=str, default=None, help="The trick for prompting generation.")
 
     # parser.add_argument("--temperature", type=float, default=0.0, help="Temperature for LLM.")
     # parser.add_argument('--max_tokens', type=int, default=256, help="Number of generated tokens.")
@@ -47,16 +46,15 @@ def get_args():
     # parser.add_argument('--outfile', default='ours', type=str)
     args = parser.parse_args()
 
-    args.data_start_index=0
-    args.data_end_index=7785
+    args.data_start_index=None
+    args.data_end_index=None
     
-    args.do_annotate=False # don't modify ###
-    args.do_inference=False
+    args.do_annotate=True
+    args.do_inference=True
     args.do_eval=True
     
     args.data_name='tq'
     args.model_type='chatgpt'
-    args.prompt_trick=None #"ioe"
 
     args.temperature=0.0
     args.max_tokens=256
@@ -64,14 +62,14 @@ def get_args():
     args.ra="dense"
     
     args.num_iteration=1
-    args.re_fusion=True #
+    args.re_fusion=False #
     args.fusion_strategy = "probability" #
-    # "prompt"
+    # "selection"
 
-    args.annotated_file='output/tq_chatgpt_None_dense/ioe_inference.json'
+    args.annotated_file='xxx_your_annotated_file.json' # _with_judgment_label
     args.source=f'data/source/{args.data_name}.json'
-    args.res_file='output/tq_chatgpt_None_dense/fuse_prompt_iter_3_1_inference.json' #
-    args.output_dir=f'output/{args.data_name}_{args.model_type}_{args.prompt_trick}_{args.ra}'
+    args.res_file='xxx_your_inference_result_file.json' # _with_judgment_prediction
+    args.output_dir=f'output/{args.data_name}_{args.model_type}_{args.ra}'
     args.outfile=f'fuse_{args.fusion_strategy}_iter_{args.num_iteration}'
 
     args.ra_type=ra_dict[args.ra]
@@ -149,7 +147,7 @@ def fusion(args, res, sample, vllm_bags, messages, messages1):
             res['pred_decision'] = "discard"
         else:
             res['pred_decision'] = "keep"
-    elif args.fusion_strategy == "prompt":
+    elif args.fusion_strategy == "selection":
 
         if res['cf_use']['pred_decision'] == "discard":
             single_prompt = get_single_prompt(args, 'fusion_use', sample)
@@ -216,7 +214,8 @@ def main():
     all_data = load_source(args.source)
     if args.do_inference and not args.do_annotate:
         annotated_data = load_source(args.annotated_file)
-    if args.re_fusion and not args.do_inference:
+    # if args.re_fusion and not args.do_inference:
+    if not args.do_inference:
         res_data = load_source(args.res_file)
 
 
@@ -278,10 +277,6 @@ def main():
     if args.do_eval:
         risk = UK/(AK+UK)
         print('risk: '+str(risk))
-        overcaution = AD/(UD+AD)
-        print('overcaution: '+str(overcaution))
-        recall = AK/(AK+AD)
-        print('recall: '+str(recall))
         carefulness = UD/(UK+UD)
         print('carefulness: '+str(carefulness))
         alignment = (AK+UD)/(AK+AD+UK+UD)
@@ -294,8 +289,6 @@ def main():
 
         eval_res = {
             "risk": risk,
-            "overcaution": overcaution,
-            "recall": recall,
             "carefulness": carefulness,
             "alignment": alignment,
             "coverage": coverage,
