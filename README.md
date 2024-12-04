@@ -1,5 +1,5 @@
 # RC-RAG
-Implementation code for the paper "Controlling Risk of Retrieval-augmented Generation: A Counterfactual Prompting Framework", accepted by EMNLP Findings 2024.
+Implementation code for the paper "[Controlling Risk of Retrieval-augmented Generation: A Counterfactual Prompting Framework](https://aclanthology.org/2024.findings-emnlp.133.pdf)", accepted by EMNLP Findings 2024.
 
 ## Abstract
 
@@ -11,4 +11,15 @@ Retrieval-augmented generation (RAG) has emerged as a popular solution to mitiga
   </picture>
 </p>
 
+## Citation
 
+If you find our work useful, please consider citing our paper:
+```
+@inproceedings{chen2024controlling,
+  title={Controlling Risk of Retrieval-augmented Generation: A Counterfactual Prompting Framework},
+  author={Chen, Lu and Zhang, Ruqing and Guo, Jiafeng and Fan, Yixing and Cheng, Xueqi},
+  booktitle={Findings of the Association for Computational Linguistics: EMNLP 2024},
+  pages={2380--2393},
+  year={2024}
+}
+```
